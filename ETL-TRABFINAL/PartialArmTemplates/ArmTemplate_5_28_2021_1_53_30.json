@@ -1,0 +1,51 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "ETL-TRABFINAL"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "muestra_datos_ds",
+								"type": "DatasetReference"
+							},
+							"name": "leemuestradatos"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "muestra_datos_ds_salida",
+								"type": "DatasetReference"
+							},
+							"name": "receptor1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "DerivedColumn1"
+						}
+					],
+					"script": "source(output(\n\t\tfecha_hoy_casos as string,\n\t\tCaso as string,\n\t\t{Fecha Not} as string,\n\t\tDepartamento as string,\n\t\tDepartamento_nom as string,\n\t\tCiudad_municipio as string,\n\t\tCiudad_municipio_nom as string,\n\t\tEdad as string,\n\t\tunidad_medida as string,\n\t\tSexo as string,\n\t\tFuente_tipo_contagio as string,\n\t\tUbicacion as string,\n\t\tEstado as string,\n\t\tPais_viajo_1_cod as string,\n\t\tPais_viajo_1_nom as string,\n\t\tRecuperado as string,\n\t\tFecha_inicio_sintomas as string,\n\t\tFecha_muerte as string,\n\t\tFecha_diagnostico as string,\n\t\tFecha_recuperado as string,\n\t\tTipo_recuperacion as string,\n\t\tper_etn_ as string,\n\t\tnom_grupo_ as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> leemuestradatos\nleemuestradatos derive(Departamento = case(Departamento==\"11\", \"25\", \r\n     Departamento==\"47001\", \"47\",\r\n     Departamento==\"8001\", \"8\",\r\n     Departamento==\"13001\", \"13\"),\n\t\tDepartamento_nom = case(Departamento_nom==\"BOGOTA\", \"CUNDINAMARCA\",\r\n     Departamento_nom==\"STA MARTA D.E.\", \"MAGDALENA\",\r\n     Departamento_nom==\"BARRANQUILLA\", \"ATLANTICO\",\r\n     Departamento_nom==\"CARTAGENA\", \"BOLIVAR\")) ~> DerivedColumn1\nDerivedColumn1 sink(input(\n\t\tfecha_hoy_casos as string,\n\t\tCaso as string,\n\t\t{Fecha Not} as string,\n\t\tDepartamento as string,\n\t\tDepartamento_nom as string,\n\t\tCiudad_municipio as string,\n\t\tCiudad_municipio_nom as string,\n\t\tEdad as string,\n\t\tunidad_medida as string,\n\t\tSexo as string,\n\t\tFuente_tipo_contagio as string,\n\t\tUbicacion as string,\n\t\tEstado as string,\n\t\tPais_viajo_1_cod as string,\n\t\tPais_viajo_1_nom as string,\n\t\tRecuperado as string,\n\t\tFecha_inicio_sintomas as string,\n\t\tFecha_muerte as string,\n\t\tFecha_diagnostico as string,\n\t\tFecha_recuperado as string,\n\t\tTipo_recuperacion as string,\n\t\tper_etn_ as string,\n\t\tnom_grupo_ as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['muestra_datos_ds_salida'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> receptor1"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
