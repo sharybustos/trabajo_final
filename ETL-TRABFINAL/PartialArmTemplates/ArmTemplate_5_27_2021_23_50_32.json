@@ -6,167 +6,12 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "ETL-TRABFINAL"
-		},
-		"SqlServer1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SqlServer1'"
-		},
-		"muestra_datos_8084_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'muestra_datos_8084'"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/muestra_datos_ds')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "muestra_datos_8084",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "muestra_datos_excel.csv",
-						"container": "contprincipal"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "fecha_hoy_casos",
-						"type": "String"
-					},
-					{
-						"name": "Caso",
-						"type": "String"
-					},
-					{
-						"name": "Fecha Not",
-						"type": "String"
-					},
-					{
-						"name": "Departamento",
-						"type": "String"
-					},
-					{
-						"name": "Departamento_nom",
-						"type": "String"
-					},
-					{
-						"name": "Ciudad_municipio",
-						"type": "String"
-					},
-					{
-						"name": "Ciudad_municipio_nom",
-						"type": "String"
-					},
-					{
-						"name": "Edad",
-						"type": "String"
-					},
-					{
-						"name": "unidad_medida",
-						"type": "String"
-					},
-					{
-						"name": "Sexo",
-						"type": "String"
-					},
-					{
-						"name": "Fuente_tipo_contagio",
-						"type": "String"
-					},
-					{
-						"name": "Ubicacion",
-						"type": "String"
-					},
-					{
-						"name": "Estado",
-						"type": "String"
-					},
-					{
-						"name": "Pais_viajo_1_cod",
-						"type": "String"
-					},
-					{
-						"name": "Pais_viajo_1_nom",
-						"type": "String"
-					},
-					{
-						"name": "Recuperado",
-						"type": "String"
-					},
-					{
-						"name": "Fecha_inicio_sintomas",
-						"type": "String"
-					},
-					{
-						"name": "Fecha_muerte",
-						"type": "String"
-					},
-					{
-						"name": "Fecha_diagnostico",
-						"type": "String"
-					},
-					{
-						"name": "Fecha_recuperado",
-						"type": "String"
-					},
-					{
-						"name": "Tipo_recuperacion",
-						"type": "String"
-					},
-					{
-						"name": "per_etn_",
-						"type": "String"
-					},
-					{
-						"name": "nom_grupo_",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/muestra_datos_8084')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SqlServer1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "SqlServer",
-				"typeProperties": {
-					"connectionString": "[parameters('SqlServer1_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/muestra_datos_8084')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('muestra_datos_8084_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
@@ -201,7 +46,6 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/muestra_datos_ds')]",
 				"[concat(variables('factoryId'), '/datasets/muestra_datos_ds_salida')]"
 			]
 		},
@@ -321,9 +165,7 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/muestra_datos_8084')]"
-			]
+			"dependsOn": []
 		}
 	]
 }

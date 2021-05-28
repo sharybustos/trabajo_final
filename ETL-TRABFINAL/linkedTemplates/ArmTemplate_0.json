@@ -166,6 +166,164 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/muestra_datos_8084')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/muestra_datos_ds_salida')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "muestra_datos_8084",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "contprincipal"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "fecha_hoy_casos",
+						"type": "String"
+					},
+					{
+						"name": "Caso",
+						"type": "String"
+					},
+					{
+						"name": "Fecha Not",
+						"type": "String"
+					},
+					{
+						"name": "Departamento",
+						"type": "String"
+					},
+					{
+						"name": "Departamento_nom",
+						"type": "String"
+					},
+					{
+						"name": "Ciudad_municipio",
+						"type": "String"
+					},
+					{
+						"name": "Ciudad_municipio_nom",
+						"type": "String"
+					},
+					{
+						"name": "Edad",
+						"type": "String"
+					},
+					{
+						"name": "unidad_medida",
+						"type": "String"
+					},
+					{
+						"name": "Sexo",
+						"type": "String"
+					},
+					{
+						"name": "Fuente_tipo_contagio",
+						"type": "String"
+					},
+					{
+						"name": "Ubicacion",
+						"type": "String"
+					},
+					{
+						"name": "Estado",
+						"type": "String"
+					},
+					{
+						"name": "Pais_viajo_1_cod",
+						"type": "String"
+					},
+					{
+						"name": "Pais_viajo_1_nom",
+						"type": "String"
+					},
+					{
+						"name": "Recuperado",
+						"type": "String"
+					},
+					{
+						"name": "Fecha_inicio_sintomas",
+						"type": "String"
+					},
+					{
+						"name": "Fecha_muerte",
+						"type": "String"
+					},
+					{
+						"name": "Fecha_diagnostico",
+						"type": "String"
+					},
+					{
+						"name": "Fecha_recuperado",
+						"type": "String"
+					},
+					{
+						"name": "Tipo_recuperacion",
+						"type": "String"
+					},
+					{
+						"name": "per_etn_",
+						"type": "String"
+					},
+					{
+						"name": "nom_grupo_",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/muestra_datos_8084')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "muestra_datos_ds",
+								"type": "DatasetReference"
+							},
+							"name": "leemuestradatos"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "muestra_datos_ds_salida",
+								"type": "DatasetReference"
+							},
+							"name": "receptor1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"script": "source(output(\n\t\tfecha_hoy_casos as string,\n\t\tCaso as string,\n\t\t{Fecha Not} as string,\n\t\tDepartamento as string,\n\t\tDepartamento_nom as string,\n\t\tCiudad_municipio as string,\n\t\tCiudad_municipio_nom as string,\n\t\tEdad as string,\n\t\tunidad_medida as string,\n\t\tSexo as string,\n\t\tFuente_tipo_contagio as string,\n\t\tUbicacion as string,\n\t\tEstado as string,\n\t\tPais_viajo_1_cod as string,\n\t\tPais_viajo_1_nom as string,\n\t\tRecuperado as string,\n\t\tFecha_inicio_sintomas as string,\n\t\tFecha_muerte as string,\n\t\tFecha_diagnostico as string,\n\t\tFecha_recuperado as string,\n\t\tTipo_recuperacion as string,\n\t\tper_etn_ as string,\n\t\tnom_grupo_ as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> leemuestradatos\nleemuestradatos alterRow(updateIf(Departamento == '11'),\n\tupdateIf(Departamento_nom == 'BOGOTA'),\n\tupdateIf(Departamento == '13001'),\n\tupdateIf(Departamento_nom == 'CARTAGENA'),\n\tupdateIf(Departamento == '8001'),\n\tupdateIf(Departamento_nom == 'BARRANQUILLA'),\n\tupdateIf(Departamento == '47001'),\n\tupdateIf(Departamento_nom == 'STA MARTA D.E.')) ~> AlterRow1\nAlterRow1 sink(input(\n\t\tfecha_hoy_casos as string,\n\t\tCaso as string,\n\t\t{Fecha Not} as string,\n\t\tDepartamento as string,\n\t\tDepartamento_nom as string,\n\t\tCiudad_municipio as string,\n\t\tCiudad_municipio_nom as string,\n\t\tEdad as string,\n\t\tunidad_medida as string,\n\t\tSexo as string,\n\t\tFuente_tipo_contagio as string,\n\t\tUbicacion as string,\n\t\tEstado as string,\n\t\tPais_viajo_1_cod as string,\n\t\tPais_viajo_1_nom as string,\n\t\tRecuperado as string,\n\t\tFecha_inicio_sintomas as string,\n\t\tFecha_muerte as string,\n\t\tFecha_diagnostico as string,\n\t\tFecha_recuperado as string,\n\t\tTipo_recuperacion as string,\n\t\tper_etn_ as string,\n\t\tnom_grupo_ as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['muestra_datos_salida'],\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> receptor1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/muestra_datos_ds')]",
+				"[concat(variables('factoryId'), '/datasets/muestra_datos_ds_salida')]"
+			]
 		}
 	]
 }
