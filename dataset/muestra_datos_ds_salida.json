@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "muestra_datos_salida",
 				"container": "contprincipal"
 			},
 			"columnDelimiter": ",",
